@@ -7,6 +7,7 @@ import { notFound, errorHandler } from './middleware/errorMiddleware.js';
 import userRoutes from './routes/userRoutes.js';
 import projectRoutes from './routes/projectRoutes.js';
 import taskRoutes from './routes/taskRoutes.js';
+import meetingRoutes from './routes/meetingRoutes.js';
 
 // Load env vars
 dotenv.config();
@@ -26,6 +27,7 @@ app.use(cookieParser());
 app.use('/api/users', userRoutes);
 app.use('/api/projects', projectRoutes);
 app.use('/api/tasks', taskRoutes);
+app.use('/api/meetings', meetingRoutes);
 
 // Basic Route for testing
 app.get('/api', (req, res) => {
