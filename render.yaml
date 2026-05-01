@@ -16,12 +16,16 @@ services:
       - key: JWT_SECRET
         sync: false
       - key: FRONTEND_URL
-        sync: false
+        value: https://crmideaforge.onrender.com
       - key: CORS_ORIGIN
-        sync: false
+        value: https://crmideaforge.onrender.com
+      - key: DNS_SERVERS
+        value: 1.1.1.1,8.8.8.8
+      - key: VITE_PUBLIC_APP_URL
+        value: https://crmideaforge.onrender.com
       - key: GOOGLE_CLIENT_ID
         sync: false
       - key: GOOGLE_CLIENT_SECRET
         sync: false
       - key: GOOGLE_CALLBACK_URL
-        sync: false
+        value: https://crmideaforge.onrender.com/api/auth/google/callback
