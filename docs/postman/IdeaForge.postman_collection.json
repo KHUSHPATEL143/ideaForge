@@ -1,0 +1,565 @@
+{
+  "info": {
+    "_postman_id": "f2f0cc1b-1f4e-4b67-b73a-ideaforge-docs",
+    "name": "IdeaForge MERN SaaS API",
+    "description": "Postman documentation collection for the IdeaForge MERN SaaS platform. Import this collection with the provided environment, run Register/Login first to create the `jwt` cookie, then test protected APIs.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://crmideaforge.onrender.com"
+    },
+    {
+      "key": "projectId",
+      "value": ""
+    },
+    {
+      "key": "taskId",
+      "value": ""
+    },
+    {
+      "key": "teamId",
+      "value": ""
+    },
+    {
+      "key": "meetingId",
+      "value": ""
+    },
+    {
+      "key": "notificationId",
+      "value": ""
+    },
+    {
+      "key": "memberUserId",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "description": "Public API health checks.",
+      "item": [
+        {
+          "name": "API Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api",
+            "description": "Verifies that the deployed Express API is running."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Authentication",
+      "description": "Email/password auth uses an HTTP-only `jwt` cookie. Postman will store the cookie after Register/Login.",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Demo Evaluator\",\n  \"email\": \"{{testUserEmail}}\",\n  \"password\": \"{{testUserPassword}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/users",
+            "description": "Creates a user and sets the auth cookie."
+          }
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"{{testUserEmail}}\",\n  \"password\": \"{{testUserPassword}}\"\n}"
+            },
+            "url": "{{baseUrl}}/api/users/login",
+            "description": "Logs in and sets the auth cookie used by protected routes."
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/users/profile",
+            "description": "Returns the current authenticated user's profile."
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Demo Evaluator\",\n  \"jobTitle\": \"Project Reviewer\"\n}"
+            },
+            "url": "{{baseUrl}}/api/users/profile",
+            "description": "Updates profile fields. Password updates can include `currentPassword` and `password`."
+          }
+        },
+        {
+          "name": "Logout User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": "{{baseUrl}}/api/users/logout",
+            "description": "Clears the auth cookie."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Google OAuth",
+      "description": "OAuth endpoints for Google sign-in, Gmail, and Calendar integration.",
+      "item": [
+        {
+          "name": "Start Google OAuth",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/auth/google",
+            "description": "Redirects to Google's OAuth consent screen."
+          }
+        },
+        {
+          "name": "Google OAuth Debug",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/auth/google/debug",
+            "description": "Shows safe deployment OAuth config: callback URL, frontend URL, and masked client ID."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Projects",
+      "description": "Project CRUD APIs with personal and team-scoped access control.",
+      "item": [
+        {
+          "name": "List Projects",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/projects",
+            "description": "Lists personal projects for the logged-in user."
+          }
+        },
+        {
+          "name": "List Team Projects",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/projects?team={{teamId}}",
+            "description": "Lists projects for a team where the user is a member."
+          }
+        },
+        {
+          "name": "Create Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Launch CRM Dashboard\",\n  \"description\": \"Build and review the SaaS project workspace.\",\n  \"status\": \"Planning\",\n  \"priority\": \"High\"\n}"
+            },
+            "url": "{{baseUrl}}/api/projects",
+            "description": "Creates a personal project. Add `team` to create a team project."
+          }
+        },
+        {
+          "name": "Get Project By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/projects/{{projectId}}",
+            "description": "Fetches a single project by ID."
+          }
+        },
+        {
+          "name": "Update Project",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Launch CRM Dashboard\",\n  \"description\": \"Updated project description.\",\n  \"status\": \"Active\",\n  \"priority\": \"Medium\"\n}"
+            },
+            "url": "{{baseUrl}}/api/projects/{{projectId}}",
+            "description": "Updates an owned project or a project in a team where the user is a member."
+          }
+        },
+        {
+          "name": "Delete Project",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/projects/{{projectId}}",
+            "description": "Deletes an authorized project."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Tasks",
+      "description": "Task APIs for personal, project, and team workflows.",
+      "item": [
+        {
+          "name": "List Tasks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tasks",
+            "description": "Lists personal tasks."
+          }
+        },
+        {
+          "name": "List Project Tasks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tasks?project={{projectId}}",
+            "description": "Lists tasks for a project."
+          }
+        },
+        {
+          "name": "List Team Tasks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/tasks?team={{teamId}}&isCompleted=false",
+            "description": "Lists incomplete tasks for a team."
+          }
+        },
+        {
+          "name": "Create Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Prepare evaluation demo\",\n  \"project\": \"{{projectId}}\",\n  \"dueDate\": \"2026-05-10T10:00:00.000Z\"\n}"
+            },
+            "url": "{{baseUrl}}/api/tasks",
+            "description": "Creates a task. Optional fields: `project`, `team`, `assignedTo`, `dueDate`."
+          }
+        },
+        {
+          "name": "Update Task",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Prepare final evaluation demo\",\n  \"isCompleted\": true,\n  \"dueDate\": \"2026-05-11T10:00:00.000Z\"\n}"
+            },
+            "url": "{{baseUrl}}/api/tasks/{{taskId}}",
+            "description": "Updates task title, completion state, or due date."
+          }
+        },
+        {
+          "name": "Delete Task",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/tasks/{{taskId}}",
+            "description": "Deletes an authorized task."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Meetings",
+      "description": "Local meeting APIs shown in the Calendar page.",
+      "item": [
+        {
+          "name": "List Meetings",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/meetings",
+            "description": "Lists meetings for the logged-in user."
+          }
+        },
+        {
+          "name": "Create Meeting",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Sprint Planning\",\n  \"description\": \"Plan next project sprint.\",\n  \"startTime\": \"2026-05-10T09:00:00.000Z\",\n  \"endTime\": \"2026-05-10T10:00:00.000Z\",\n  \"type\": \"Internal Sync\",\n  \"meetingLink\": \"https://meet.google.com/demo-room\",\n  \"attendees\": [\"teammate@example.com\"]\n}"
+            },
+            "url": "{{baseUrl}}/api/meetings",
+            "description": "Creates a meeting. Required: `title`, `startTime`, `endTime`."
+          }
+        },
+        {
+          "name": "Update Meeting",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Sprint Planning\",\n  \"description\": \"Updated notes.\",\n  \"type\": \"Review\"\n}"
+            },
+            "url": "{{baseUrl}}/api/meetings/{{meetingId}}",
+            "description": "Updates an owned meeting."
+          }
+        },
+        {
+          "name": "Delete Meeting",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/meetings/{{meetingId}}",
+            "description": "Deletes an owned meeting."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Teams",
+      "description": "Team collaboration APIs with owner/admin/member roles.",
+      "item": [
+        {
+          "name": "List My Teams",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/teams",
+            "description": "Lists teams where the logged-in user is a member."
+          }
+        },
+        {
+          "name": "Create Team",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"IdeaForge Core Team\",\n  \"description\": \"Main project team for evaluation and delivery.\"\n}"
+            },
+            "url": "{{baseUrl}}/api/teams",
+            "description": "Creates a team and makes the current user the owner."
+          }
+        },
+        {
+          "name": "Get Team By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/teams/{{teamId}}",
+            "description": "Fetches a team with populated members."
+          }
+        },
+        {
+          "name": "Add Team Member",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"member@example.com\",\n  \"role\": \"member\"\n}"
+            },
+            "url": "{{baseUrl}}/api/teams/{{teamId}}/members",
+            "description": "Owner/admin adds an existing user to a team."
+          }
+        },
+        {
+          "name": "Update Member Role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"admin\"\n}"
+            },
+            "url": "{{baseUrl}}/api/teams/{{teamId}}/members/{{memberUserId}}",
+            "description": "Owner updates a team member role."
+          }
+        },
+        {
+          "name": "Remove Team Member",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": "{{baseUrl}}/api/teams/{{teamId}}/members/{{memberUserId}}",
+            "description": "Owner/admin removes a team member."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard & Reports",
+      "description": "Aggregated dashboard and report data APIs.",
+      "item": [
+        {
+          "name": "Dashboard Stats",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/dashboard/stats",
+            "description": "Returns task, project, meeting, and productivity summary data."
+          }
+        },
+        {
+          "name": "Reports Data",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/reports",
+            "description": "Returns analytics data used by the Reports dashboard."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Notifications",
+      "description": "Notification APIs for team invites and task assignment events.",
+      "item": [
+        {
+          "name": "List Notifications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/notifications",
+            "description": "Lists notifications for the logged-in user."
+          }
+        },
+        {
+          "name": "Mark All Notifications Read",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{baseUrl}}/api/notifications/read-all",
+            "description": "Marks all notifications as read."
+          }
+        },
+        {
+          "name": "Mark Notification Read",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "url": "{{baseUrl}}/api/notifications/{{notificationId}}/read",
+            "description": "Marks one notification as read."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Search",
+      "description": "Global cross-model search.",
+      "item": [
+        {
+          "name": "Global Search",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/search?q=project",
+            "description": "Searches across supported IdeaForge models using query parameter `q`."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Google Productivity",
+      "description": "Protected APIs backed by the logged-in user's Google OAuth tokens.",
+      "item": [
+        {
+          "name": "Recent Gmail Emails",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/gmail/recent",
+            "description": "Returns recent Gmail messages after Google OAuth login."
+          }
+        },
+        {
+          "name": "Upcoming Calendar Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/calendar/upcoming",
+            "description": "Returns upcoming Google Calendar events."
+          }
+        },
+        {
+          "name": "Monthly Calendar Events",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": "{{baseUrl}}/api/calendar/month?year=2026&month=5",
+            "description": "Returns Google Calendar events for a month. Query params: `year`, `month`."
+          }
+        }
+      ]
+    }
+  ]
+}
